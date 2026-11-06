@@ -14,6 +14,8 @@ val MediCyanAccent = Color(0xFF0096C7)
 val MediCyanLight = Color(0xFFE0F2FE)
 val MediMint = Color(0xFF10B981)
 val MediMintLight = Color(0xFFD1FAE5)
+val MediSuccessGreen = MediMint
+val MediSuccessLight = MediMintLight
 
 // Escrow & Financial Accents
 val MediEscrowAmber = Color(0xFFD97706)

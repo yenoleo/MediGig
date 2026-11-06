@@ -42,7 +42,10 @@ enum class MediGigNavDestination(val label: String) {
   BOOKINGS("Gigs"),
   WALLET("Wallet"),
   RATE_SETTINGS("Schedule"),
-  PROFILE("Profile")
+  PROFILE("Profile"),
+  VAULT("Vault"),
+  REQUISITIONS("Requisitions"),
+  DISPUTES("Disputes")
 }
 
 class MainActivity : ComponentActivity() {
@@ -223,6 +226,77 @@ fun MediGigMainApp() {
                 )
               }
             }
+
+            // Portals Menu Dropdown (Quick Access from any screen)
+            Box {
+              var showPortalMenu by remember { mutableStateOf(false) }
+
+              IconButton(
+                onClick = { showPortalMenu = true },
+                modifier = Modifier
+                  .size(36.dp)
+                  .testTag("portal_menu_button")
+              ) {
+                Icon(
+                  imageVector = Icons.Outlined.Widgets,
+                  contentDescription = "Specialized Healthcare Portals",
+                  tint = MediTealPrimary
+                )
+              }
+
+              DropdownMenu(
+                expanded = showPortalMenu,
+                onDismissRequest = { showPortalMenu = false }
+              ) {
+                DropdownMenuItem(
+                  text = {
+                    Column {
+                      Text("HPCSA & SANC Vault", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                      Text("Regulatory credentials", fontSize = 11.sp, color = MediTextMuted)
+                    }
+                  },
+                  leadingIcon = {
+                    Icon(Icons.Filled.VerifiedUser, contentDescription = null, tint = MediTealPrimary)
+                  },
+                  onClick = {
+                    showPortalMenu = false
+                    currentDestination = MediGigNavDestination.VAULT
+                  }
+                )
+
+                DropdownMenuItem(
+                  text = {
+                    Column {
+                      Text("Hospital Requisitions", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                      Text("Shift coverage & rosters", fontSize = 11.sp, color = MediTextMuted)
+                    }
+                  },
+                  leadingIcon = {
+                    Icon(Icons.Filled.Campaign, contentDescription = null, tint = Color(0xFF2563EB))
+                  },
+                  onClick = {
+                    showPortalMenu = false
+                    currentDestination = MediGigNavDestination.REQUISITIONS
+                  }
+                )
+
+                DropdownMenuItem(
+                  text = {
+                    Column {
+                      Text("Admin Dispute Portal", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                      Text("Escrow freeze tribunal", fontSize = 11.sp, color = MediTextMuted)
+                    }
+                  },
+                  leadingIcon = {
+                    Icon(Icons.Filled.Gavel, contentDescription = null, tint = MediDangerRed)
+                  },
+                  onClick = {
+                    showPortalMenu = false
+                    currentDestination = MediGigNavDestination.DISPUTES
+                  }
+                )
+              }
+            }
           }
         }
       }
@@ -332,7 +406,10 @@ fun MediGigMainApp() {
             onNavigateToBookings = { currentDestination = MediGigNavDestination.BOOKINGS },
             onNavigateToWallet = { currentDestination = MediGigNavDestination.WALLET },
             onNavigateToRateSettings = { currentDestination = MediGigNavDestination.RATE_SETTINGS },
-            onOpenBookingDetail = { booking -> detailBooking = booking }
+            onOpenBookingDetail = { booking -> detailBooking = booking },
+            onNavigateToVault = { currentDestination = MediGigNavDestination.VAULT },
+            onNavigateToRequisitions = { currentDestination = MediGigNavDestination.REQUISITIONS },
+            onNavigateToDisputes = { currentDestination = MediGigNavDestination.DISPUTES }
           )
         }
 
@@ -369,7 +446,29 @@ fun MediGigMainApp() {
         MediGigNavDestination.PROFILE -> {
           ProfileScreen(
             onNavigateToRateSettings = { currentDestination = MediGigNavDestination.RATE_SETTINGS },
-            onNavigateToWallet = { currentDestination = MediGigNavDestination.WALLET }
+            onNavigateToWallet = { currentDestination = MediGigNavDestination.WALLET },
+            onNavigateToVault = { currentDestination = MediGigNavDestination.VAULT },
+            onNavigateToRequisitions = { currentDestination = MediGigNavDestination.REQUISITIONS },
+            onNavigateToDisputes = { currentDestination = MediGigNavDestination.DISPUTES }
+          )
+        }
+
+        MediGigNavDestination.VAULT -> {
+          HpcsaSancVaultScreen(
+            onNavigateBack = { currentDestination = MediGigNavDestination.HOME }
+          )
+        }
+
+        MediGigNavDestination.REQUISITIONS -> {
+          HospitalRequisitionScreen(
+            onNavigateBack = { currentDestination = MediGigNavDestination.HOME },
+            onNavigateToFindDoctors = { currentDestination = MediGigNavDestination.SEARCH }
+          )
+        }
+
+        MediGigNavDestination.DISPUTES -> {
+          AdminDisputePortalScreen(
+            onNavigateBack = { currentDestination = MediGigNavDestination.HOME }
           )
         }
       }

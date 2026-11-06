@@ -725,6 +725,437 @@ object MediGigRepository {
     _pendingNotification.value = _bookings.value.firstOrNull { it.status == BookingStatus.PENDING_RESPONSE }
   }
 
+  // --- CREDENTIAL VAULT STATE & ACTIONS (HPCSA / SANC) ---
+  private val _credentialsVault = MutableStateFlow<List<CredentialVaultItem>>(
+    listOf(
+      CredentialVaultItem(
+        id = "CRD-01",
+        practitionerId = "pro_me",
+        practitionerName = "Dr. L. Mokoena",
+        initials = "LM",
+        profession = ProfessionCategory.SPECIALIST,
+        council = RegulatoryCouncil.HPCSA,
+        registrationNumber = "MP 0534211",
+        category = "Medical Practitioner (Specialist Cardiologist)",
+        annualCertificateExpiry = "31 Mar 2027",
+        isApcPaid = true,
+        cpdPointsCurrent = 30,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "MPS (Medical Protection Society)",
+        malpracticePolicyNumber = "MPS-ZA-90182",
+        malpracticeExpiry = "31 Dec 2026",
+        policeClearanceStatus = "SAPS Form 7 Sexual Offences Clear (Verified 2026)",
+        status = VerificationStatus.VERIFIED,
+        lastVerifiedTimestamp = "HPCSA Live Register Verified (Today 08:30)",
+        qrRegisterHash = "SHA256:7a9f8c01d4e2...HPCSA-OK"
+      ),
+      CredentialVaultItem(
+        id = "CRD-02",
+        practitionerId = "doc_1",
+        practitionerName = "Dr. M. Johnson",
+        initials = "MJ",
+        profession = ProfessionCategory.GENERAL_PRACTITIONER,
+        council = RegulatoryCouncil.HPCSA,
+        registrationNumber = "MP 0492100",
+        category = "Independent Practice General Practitioner",
+        annualCertificateExpiry = "31 Mar 2027",
+        isApcPaid = true,
+        cpdPointsCurrent = 28,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "EthiQal Medical Indemnity",
+        malpracticePolicyNumber = "ETH-ZA-77219",
+        malpracticeExpiry = "28 Feb 2027",
+        policeClearanceStatus = "Police Clearance Certificate Valid (Exp 2027)",
+        status = VerificationStatus.VERIFIED,
+        lastVerifiedTimestamp = "HPCSA Live Register Verified (02 Nov 2026)",
+        qrRegisterHash = "SHA256:4b1e8820f99a...HPCSA-OK"
+      ),
+      CredentialVaultItem(
+        id = "CRD-03",
+        practitionerId = "nurse_1",
+        practitionerName = "Sister K. Ndebele",
+        initials = "KN",
+        profession = ProfessionCategory.REGISTERED_NURSE,
+        council = RegulatoryCouncil.SANC,
+        registrationNumber = "SANC 14209931",
+        category = "Registered Professional Nurse & Critical Care Specialist",
+        annualCertificateExpiry = "31 Dec 2026",
+        isApcPaid = true,
+        cpdPointsCurrent = 30,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "DENOSA Professional Indemnity",
+        malpracticePolicyNumber = "DEN-41029-ZA",
+        malpracticeExpiry = "31 Dec 2026",
+        policeClearanceStatus = "SAPS Criminal Record Clear & Form 7 Valid",
+        status = VerificationStatus.VERIFIED,
+        lastVerifiedTimestamp = "SANC Live Register Confirmed (Yesterday 16:15)",
+        qrRegisterHash = "SHA256:91da3371bc02...SANC-OK"
+      ),
+      CredentialVaultItem(
+        id = "CRD-04",
+        practitionerId = "dentist_1",
+        practitionerName = "Dr. Lerato P.",
+        initials = "LP",
+        profession = ProfessionCategory.DENTIST,
+        council = RegulatoryCouncil.HPCSA,
+        registrationNumber = "DP 0038102",
+        category = "Dental Practitioner (General Dentistry & Minor Surgery)",
+        annualCertificateExpiry = "31 Mar 2027",
+        isApcPaid = true,
+        cpdPointsCurrent = 25,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "MPS (Medical Protection Society)",
+        malpracticePolicyNumber = "MPS-ZA-88410",
+        malpracticeExpiry = "31 Dec 2026",
+        policeClearanceStatus = "Verified SAPS Background Check",
+        status = VerificationStatus.VERIFIED,
+        lastVerifiedTimestamp = "HPCSA Live Register Verified (28 Oct 2026)",
+        qrRegisterHash = "SHA256:11bb7409ffae...HPCSA-OK"
+      ),
+      CredentialVaultItem(
+        id = "CRD-05",
+        practitionerId = "nurse_2",
+        practitionerName = "Sister Thandi M.",
+        initials = "TM",
+        profession = ProfessionCategory.REGISTERED_NURSE,
+        council = RegulatoryCouncil.SANC,
+        registrationNumber = "SANC 15488102",
+        category = "Professional Nurse & Neonatal ICU Specialist",
+        annualCertificateExpiry = "31 Dec 2026",
+        isApcPaid = true,
+        cpdPointsCurrent = 29,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "HOSPERSA Indemnity Cover",
+        malpracticePolicyNumber = "HOS-99120-ZA",
+        malpracticeExpiry = "30 Jun 2027",
+        policeClearanceStatus = "Clear - Sexual Offences Register Form 7",
+        status = VerificationStatus.VERIFIED,
+        lastVerifiedTimestamp = "SANC Live Register Confirmed (01 Nov 2026)",
+        qrRegisterHash = "SHA256:55ef8902cd34...SANC-OK"
+      ),
+      CredentialVaultItem(
+        id = "CRD-06",
+        practitionerId = "spec_2",
+        practitionerName = "Dr. Pieter Van Zyl",
+        initials = "PV",
+        profession = ProfessionCategory.SPECIALIST,
+        council = RegulatoryCouncil.HPCSA,
+        registrationNumber = "MP 0381921",
+        category = "Anaesthesiologist Specialist (FCA SA)",
+        annualCertificateExpiry = "31 Mar 2027",
+        isApcPaid = true,
+        cpdPointsCurrent = 30,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "MPS (High Risk Surgical Cover R30M)",
+        malpracticePolicyNumber = "MPS-SPEC-38192",
+        malpracticeExpiry = "31 Dec 2026",
+        policeClearanceStatus = "SAPS Form 7 Sexual Offences Clear",
+        status = VerificationStatus.VERIFIED,
+        lastVerifiedTimestamp = "HPCSA Live Register Verified (03 Nov 2026)",
+        qrRegisterHash = "SHA256:33bc8811eef0...HPCSA-OK"
+      ),
+      CredentialVaultItem(
+        id = "CRD-07",
+        practitionerId = "doc_pending",
+        practitionerName = "Dr. Zanele Ndlovu",
+        initials = "ZN",
+        profession = ProfessionCategory.GENERAL_PRACTITIONER,
+        council = RegulatoryCouncil.HPCSA,
+        registrationNumber = "MP 0591044",
+        category = "Medical Practitioner (Public Service to Independent)",
+        annualCertificateExpiry = "31 Mar 2026",
+        isApcPaid = true,
+        cpdPointsCurrent = 22,
+        cpdPointsRequired = 30,
+        malpracticeInsurer = "EthiQal (Under Review)",
+        malpracticePolicyNumber = "ETH-PENDING-44",
+        malpracticeExpiry = "31 Dec 2026",
+        policeClearanceStatus = "Awaiting Form 7 Criminal Stamp",
+        status = VerificationStatus.PENDING_REVIEW,
+        lastVerifiedTimestamp = "Audit in progress by MediGig Compliance",
+        qrRegisterHash = "SHA256:pending...AUDIT"
+      )
+    )
+  )
+  val credentialsVault: StateFlow<List<CredentialVaultItem>> = _credentialsVault.asStateFlow()
+
+  fun triggerLiveRegisterVerification(credentialId: String) {
+    _credentialsVault.value = _credentialsVault.value.map { item ->
+      if (item.id == credentialId) {
+        item.copy(
+          status = VerificationStatus.VERIFIED,
+          lastVerifiedTimestamp = "Live Register Validated (Just now • ${SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())})"
+        )
+      } else item
+    }
+    logAudit("VAULT_LIVE_VERIFY", "Live lookup performed for credential $credentialId on regulatory register.")
+  }
+
+  fun addNewCredential(item: CredentialVaultItem) {
+    _credentialsVault.value = listOf(item) + _credentialsVault.value
+    logAudit("VAULT_CREDENTIAL_ADDED", "New credential added to vault: ${item.registrationNumber} (${item.practitionerName})")
+  }
+
+  // --- HOSPITAL REQUISITION DASHBOARD STATE & ACTIONS ---
+  private val _hospitalRequisitions = MutableStateFlow<List<HospitalRequisition>>(
+    listOf(
+      HospitalRequisition(
+        id = "REQ-101",
+        facilityId = "prac_sandton",
+        facilityName = "Netcare Hospital Sandton",
+        department = HospitalDepartment.ICU_CRITICAL_CARE,
+        roleNeeded = "ICU Sister (Day Shift)",
+        profession = ProfessionCategory.REGISTERED_NURSE,
+        date = "Tomorrow (07:00 - 19:00)",
+        shiftType = "12h Day Shift",
+        rateOfferedZar = 1400,
+        locumsNeeded = 1,
+        locumsAssigned = 0,
+        status = RequisitionStatus.OPEN_BROADCASTING,
+        urgency = "Critical",
+        broadcastRadiusKm = 25,
+        notes = "Emergency cover needed for Bed 8 & 9 ICU ventilators. Must have SANC Critical Care."
+      ),
+      HospitalRequisition(
+        id = "REQ-102",
+        facilityId = "prac_sandton",
+        facilityName = "Netcare Hospital Sandton",
+        department = HospitalDepartment.EMERGENCY_CASUALTY,
+        roleNeeded = "Casualty Trauma Locum GP",
+        profession = ProfessionCategory.GENERAL_PRACTITIONER,
+        date = "10 Nov 2026 (19:00 - 07:00)",
+        shiftType = "12h Night Duty",
+        rateOfferedZar = 2800,
+        locumsNeeded = 1,
+        locumsAssigned = 0,
+        status = RequisitionStatus.OPEN_BROADCASTING,
+        urgency = "High",
+        broadcastRadiusKm = 30,
+        notes = "Saturday night trauma cover. ATLS and ACLS certification required."
+      ),
+      HospitalRequisition(
+        id = "REQ-103",
+        facilityId = "prac_mediclinic",
+        facilityName = "Mediclinic Pretoria",
+        department = HospitalDepartment.THEATRE_ANAESTHETICS,
+        roleNeeded = "Anaesthesiologist Theatre Call",
+        profession = ProfessionCategory.SPECIALIST,
+        date = "12 Nov 2026 (08:00 - 17:00)",
+        shiftType = "Day Theatre Call",
+        rateOfferedZar = 4800,
+        locumsNeeded = 1,
+        locumsAssigned = 1,
+        status = RequisitionStatus.FILLED,
+        urgency = "High",
+        broadcastRadiusKm = 40,
+        assignedWorkerName = "Dr. Pieter Van Zyl",
+        assignedWorkerInitials = "PV",
+        notes = "Elective orthopaedic and general surgery theatre list."
+      ),
+      HospitalRequisition(
+        id = "REQ-104",
+        facilityId = "prac_sandton",
+        facilityName = "Netcare Hospital Sandton",
+        department = HospitalDepartment.GENERAL_WARD,
+        roleNeeded = "Ward Locum Doctor",
+        profession = ProfessionCategory.GENERAL_PRACTITIONER,
+        date = "15 Nov - 16 Nov 2026",
+        shiftType = "08:00 - 16:00 (Standard)",
+        rateOfferedZar = 2500,
+        locumsNeeded = 1,
+        locumsAssigned = 1,
+        status = RequisitionStatus.FILLED,
+        urgency = "Standard",
+        broadcastRadiusKm = 20,
+        assignedWorkerName = "Dr. M. Johnson",
+        assignedWorkerInitials = "MJ",
+        notes = "General medical ward rounds & admissions (Booking #BK-83921)."
+      ),
+      HospitalRequisition(
+        id = "REQ-105",
+        facilityId = "prac_intercare",
+        facilityName = "Intercare Castle Gate",
+        department = HospitalDepartment.DENTAL_CLINIC,
+        roleNeeded = "Dental Surgeon Locum",
+        profession = ProfessionCategory.DENTIST,
+        date = "18 Nov 2026 (08:30 - 17:00)",
+        shiftType = "Outpatient Shift",
+        rateOfferedZar = 3000,
+        locumsNeeded = 1,
+        locumsAssigned = 0,
+        status = RequisitionStatus.OPEN_BROADCASTING,
+        urgency = "Standard",
+        broadcastRadiusKm = 25,
+        notes = "Routine dental restorations, extractions and patient check-ups."
+      )
+    )
+  )
+  val hospitalRequisitions: StateFlow<List<HospitalRequisition>> = _hospitalRequisitions.asStateFlow()
+
+  fun createRequisition(
+    department: HospitalDepartment,
+    roleNeeded: String,
+    profession: ProfessionCategory,
+    date: String,
+    shiftType: String,
+    rateOfferedZar: Int,
+    urgency: String,
+    broadcastRadiusKm: Int,
+    notes: String
+  ) {
+    val newReq = HospitalRequisition(
+      id = "REQ-${(100..999).random()}",
+      facilityId = myPracticeProfile.id,
+      facilityName = myPracticeProfile.name,
+      department = department,
+      roleNeeded = roleNeeded,
+      profession = profession,
+      date = date,
+      shiftType = shiftType,
+      rateOfferedZar = rateOfferedZar,
+      status = RequisitionStatus.OPEN_BROADCASTING,
+      urgency = urgency,
+      broadcastRadiusKm = broadcastRadiusKm,
+      notes = notes
+    )
+    _hospitalRequisitions.value = listOf(newReq) + _hospitalRequisitions.value
+    logAudit("REQUISITION_BROADCAST", "Hospital requisition ${newReq.id} broadcast for $roleNeeded (R$rateOfferedZar) in ${department.displayName}")
+  }
+
+  fun cancelRequisition(reqId: String) {
+    _hospitalRequisitions.value = _hospitalRequisitions.value.map { req ->
+      if (req.id == reqId) req.copy(status = RequisitionStatus.CANCELLED) else req
+    }
+    logAudit("REQUISITION_CANCELLED", "Requisition $reqId was cancelled by Hospital Manager.")
+  }
+
+  // --- ADMIN DISPUTE PORTAL STATE & ACTIONS ---
+  private val _disputeCases = MutableStateFlow<List<DisputeCase>>(
+    listOf(
+      DisputeCase(
+        id = "DSP-01",
+        caseNumber = "DISP-8841",
+        bookingId = "BK-91823",
+        hospitalName = "Netcare Hospital Sandton",
+        practitionerName = "Dr. Zanele Ndlovu",
+        practitionerInitials = "ZN",
+        practitionerTitle = "Emergency Medical Doctor",
+        disputedAmountZar = 2500,
+        reasonCategory = "Delayed Shift Arrival & Handover Discrepancy",
+        hospitalStatement = "Doctor arrived 45 minutes after shift start (07:45 instead of 07:00), leading to emergency coverage delay in Casualty. Facility requests a 20% rate penalty reduction.",
+        practitionerStatement = "Heavy congestion due to severe multi-vehicle collision on N1 Ben Schoeman highway. Provided timestamped highway alert. Worked 50 minutes overtime after 19:00 to complete full patient handover.",
+        checkInTimestamp = "07:46 (GPS Verified: Netcare Sandton ER)",
+        checkOutTimestamp = "19:52 (Signed off by Sister in Charge)",
+        status = DisputeStatus.ACTIVE_INVESTIGATION,
+        createdAt = "Yesterday, 14:20"
+      ),
+      DisputeCase(
+        id = "DSP-02",
+        caseNumber = "DISP-7720",
+        bookingId = "BK-64102",
+        hospitalName = "Mediclinic Pretoria",
+        practitionerName = "Sister Thandi M.",
+        practitionerInitials = "TM",
+        practitionerTitle = "Registered Nurse - Neonatal ICU",
+        disputedAmountZar = 1200,
+        reasonCategory = "Shift Hour Calculation Disagreement",
+        hospitalStatement = "Ward register logged 11 hours on duty due to required 1h orientation interval. Shift pay requested for 11h instead of 12h.",
+        practitionerStatement = "Orientation was mandatory hospital compliance and counted toward active bedside duty per SANC guidelines. Full 12h attendance rendered.",
+        checkInTimestamp = "06:55 (Biometric scan confirmed)",
+        checkOutTimestamp = "19:05 (Ward departure)",
+        status = DisputeStatus.UNDER_MEDIATION,
+        createdAt = "03 Nov 2026, 09:10"
+      ),
+      DisputeCase(
+        id = "DSP-03",
+        caseNumber = "DISP-6109",
+        bookingId = "BK-55201",
+        hospitalName = "Life Healthcare Rosebank",
+        practitionerName = "Dr. Pieter Van Zyl",
+        practitionerInitials = "PV",
+        practitionerTitle = "Anaesthesiologist Specialist",
+        disputedAmountZar = 4800,
+        reasonCategory = "Emergency Theatre Cancellation by Hospital",
+        hospitalStatement = "Emergency theatre was rescheduled after power trip in auxiliary generator. Surgeon cancelled elective slate.",
+        practitionerStatement = "Specialist was on site ready in scrub room, turning down another hospital call. Standby fee of 50% requested.",
+        checkInTimestamp = "07:30 (Theatre Reception)",
+        checkOutTimestamp = "11:30 (Cleared by Clinical Manager)",
+        status = DisputeStatus.RESOLVED_SPLIT,
+        createdAt = "29 Oct 2026",
+        resolutionSummary = "Mediated 50/50 settlement: R2,400 paid to Dr. Van Zyl for reserved theatre standby, R2,400 refunded to Life Healthcare.",
+        resolvedAt = "30 Oct 2026, 11:00"
+      )
+    )
+  )
+  val disputeCases: StateFlow<List<DisputeCase>> = _disputeCases.asStateFlow()
+
+  fun resolveDisputeReleaseToDoctor(caseId: String, resolutionNote: String) {
+    val dispute = _disputeCases.value.firstOrNull { it.id == caseId } ?: return
+    _disputeCases.value = _disputeCases.value.map { item ->
+      if (item.id == caseId) {
+        item.copy(
+          status = DisputeStatus.RESOLVED_RELEASED,
+          resolutionSummary = resolutionNote,
+          resolvedAt = "Resolved Just Now"
+        )
+      } else item
+    }
+    // Update repository wallet & booking state
+    _walletState.value = _walletState.value.copy(
+      escrowPendingZar = maxOf(0.0, _walletState.value.escrowPendingZar - dispute.disputedAmountZar),
+      totalEarnedZar = _walletState.value.totalEarnedZar + dispute.disputedAmountZar
+    )
+    _bookings.value = _bookings.value.map { b ->
+      if (b.id == dispute.bookingId) b.copy(status = BookingStatus.FUNDS_RELEASED) else b
+    }
+    logAudit("DISPUTE_ADMIN_RELEASE", "Admin resolved dispute ${dispute.caseNumber}: R${dispute.disputedAmountZar} released to ${dispute.practitionerName}. Note: $resolutionNote")
+  }
+
+  fun resolveDisputeRefundHospital(caseId: String, resolutionNote: String) {
+    val dispute = _disputeCases.value.firstOrNull { it.id == caseId } ?: return
+    _disputeCases.value = _disputeCases.value.map { item ->
+      if (item.id == caseId) {
+        item.copy(
+          status = DisputeStatus.RESOLVED_REFUNDED,
+          resolutionSummary = resolutionNote,
+          resolvedAt = "Resolved Just Now"
+        )
+      } else item
+    }
+    // Refund escrow to hospital available balance
+    _walletState.value = _walletState.value.copy(
+      availableBalanceZar = _walletState.value.availableBalanceZar + dispute.disputedAmountZar,
+      escrowPendingZar = maxOf(0.0, _walletState.value.escrowPendingZar - dispute.disputedAmountZar)
+    )
+    _bookings.value = _bookings.value.map { b ->
+      if (b.id == dispute.bookingId) b.copy(status = BookingStatus.CANCELLED) else b
+    }
+    logAudit("DISPUTE_ADMIN_REFUND", "Admin resolved dispute ${dispute.caseNumber}: R${dispute.disputedAmountZar} refunded to ${dispute.hospitalName}. Note: $resolutionNote")
+  }
+
+  fun resolveDisputeSplit5050(caseId: String, resolutionNote: String) {
+    val dispute = _disputeCases.value.firstOrNull { it.id == caseId } ?: return
+    val halfAmount = dispute.disputedAmountZar / 2.0
+    _disputeCases.value = _disputeCases.value.map { item ->
+      if (item.id == caseId) {
+        item.copy(
+          status = DisputeStatus.RESOLVED_SPLIT,
+          resolutionSummary = "50/50 Split: $resolutionNote (R${"%,.0f".format(halfAmount)} to Doctor / R${"%,.0f".format(halfAmount)} to Hospital)",
+          resolvedAt = "Resolved Just Now"
+        )
+      } else item
+    }
+    _walletState.value = _walletState.value.copy(
+      availableBalanceZar = _walletState.value.availableBalanceZar + halfAmount,
+      escrowPendingZar = maxOf(0.0, _walletState.value.escrowPendingZar - dispute.disputedAmountZar),
+      totalEarnedZar = _walletState.value.totalEarnedZar + halfAmount
+    )
+    _bookings.value = _bookings.value.map { b ->
+      if (b.id == dispute.bookingId) b.copy(status = BookingStatus.FUNDS_RELEASED) else b
+    }
+    logAudit("DISPUTE_ADMIN_SPLIT", "Admin resolved dispute ${dispute.caseNumber} with 50/50 split. Note: $resolutionNote")
+  }
+
   private fun logAudit(action: String, details: String) {
     val entry = AuditLogEntry(
       id = "AUD-${(100..999).random()}",

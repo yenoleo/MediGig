@@ -32,12 +32,18 @@ fun HomeScreen(
   onNavigateToWallet: () -> Unit,
   onNavigateToRateSettings: () -> Unit,
   onOpenBookingDetail: (Booking) -> Unit,
+  onNavigateToVault: () -> Unit = {},
+  onNavigateToRequisitions: () -> Unit = {},
+  onNavigateToDisputes: () -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   val activeRole by MediGigRepository.activeRole.collectAsState()
   val bookings by MediGigRepository.bookings.collectAsState()
   val wallet by MediGigRepository.walletState.collectAsState()
   val myFreelancer by MediGigRepository.myFreelancerProfile.collectAsState()
+  val credentials by MediGigRepository.credentialsVault.collectAsState()
+  val requisitions by MediGigRepository.hospitalRequisitions.collectAsState()
+  val disputes by MediGigRepository.disputeCases.collectAsState()
 
   LazyColumn(
     modifier = modifier
@@ -47,6 +53,136 @@ fun HomeScreen(
     verticalArrangement = Arrangement.spacedBy(16.dp),
     contentPadding = PaddingValues(top = 16.dp, bottom = 80.dp)
   ) {
+    // 0. QUICK ACCESS: HIGH-PRIORITY HEALTHCARE PORTALS
+    item {
+      Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            text = "Clinical Operations & Portals",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+          )
+          Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = MediTealLight
+          ) {
+            Text(
+              text = "PRO FEATURES",
+              fontSize = 9.sp,
+              fontWeight = FontWeight.ExtraBold,
+              color = MediTealPrimary,
+              modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+            )
+          }
+        }
+
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          // Vault Card
+          Surface(
+            modifier = Modifier
+              .weight(1f)
+              .clip(RoundedCornerShape(12.dp))
+              .border(1.dp, MediCardBorder, RoundedCornerShape(12.dp))
+              .clickable { onNavigateToVault() },
+            color = Color.White
+          ) {
+            Column(
+              modifier = Modifier.padding(10.dp),
+              verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(30.dp)
+                  .clip(RoundedCornerShape(8.dp))
+                  .background(MediTealLight),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(
+                  imageVector = Icons.Default.VerifiedUser,
+                  contentDescription = null,
+                  tint = MediTealPrimary,
+                  modifier = Modifier.size(16.dp)
+                )
+              }
+              Text("Credential Vault", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+              Text("HPCSA & SANC (${credentials.size})", fontSize = 10.sp, color = MediTextMuted)
+            }
+          }
+
+          // Requisition Card
+          Surface(
+            modifier = Modifier
+              .weight(1f)
+              .clip(RoundedCornerShape(12.dp))
+              .border(1.dp, MediCardBorder, RoundedCornerShape(12.dp))
+              .clickable { onNavigateToRequisitions() },
+            color = Color.White
+          ) {
+            Column(
+              modifier = Modifier.padding(10.dp),
+              verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(30.dp)
+                  .clip(RoundedCornerShape(8.dp))
+                  .background(Color(0xFFEFF6FF)),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(
+                  imageVector = Icons.Default.Campaign,
+                  contentDescription = null,
+                  tint = Color(0xFF2563EB),
+                  modifier = Modifier.size(16.dp)
+                )
+              }
+              Text("Hospital Shifts", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+              Text("Requisitions (${requisitions.size})", fontSize = 10.sp, color = MediTextMuted)
+            }
+          }
+
+          // Dispute Card
+          Surface(
+            modifier = Modifier
+              .weight(1f)
+              .clip(RoundedCornerShape(12.dp))
+              .border(1.dp, MediCardBorder, RoundedCornerShape(12.dp))
+              .clickable { onNavigateToDisputes() },
+            color = Color.White
+          ) {
+            Column(
+              modifier = Modifier.padding(10.dp),
+              verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(30.dp)
+                  .clip(RoundedCornerShape(8.dp))
+                  .background(Color(0xFFFEF2F2)),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(
+                  imageVector = Icons.Default.Gavel,
+                  contentDescription = null,
+                  tint = MediDangerRed,
+                  modifier = Modifier.size(16.dp)
+                )
+              }
+              Text("Dispute Portal", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+              Text("Escrow Review (${disputes.size})", fontSize = 10.sp, color = MediTextMuted)
+            }
+          }
+        }
+      }
+    }
     if (activeRole == ActiveRole.HIRER) {
       // HIRER DASHBOARD (Hospital / Clinic View - Screen 6 in PDF)
       item {

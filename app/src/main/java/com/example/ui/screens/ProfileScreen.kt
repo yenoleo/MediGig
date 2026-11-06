@@ -32,6 +32,9 @@ import com.example.ui.theme.*
 fun ProfileScreen(
   onNavigateToRateSettings: () -> Unit,
   onNavigateToWallet: () -> Unit,
+  onNavigateToVault: () -> Unit = {},
+  onNavigateToRequisitions: () -> Unit = {},
+  onNavigateToDisputes: () -> Unit = {},
   modifier: Modifier = Modifier
 ) {
   val activeRole by MediGigRepository.activeRole.collectAsState()
@@ -143,6 +146,112 @@ fun ProfileScreen(
             Icon(Icons.Filled.SwapHoriz, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.width(4.dp))
             Text("Switch Perspective", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+          }
+        }
+      }
+
+      // Clinical Operations & Specialized Portals Card
+      AffectCard {
+        Text(
+          text = "Clinical Operations & Portals",
+          fontSize = 14.sp,
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          // 1. HPCSA & SANC Credential Vault
+          Surface(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clip(RoundedCornerShape(10.dp))
+              .border(1.dp, MediCardBorder, RoundedCornerShape(10.dp))
+              .clickable { onNavigateToVault() },
+            color = Color(0xFFF8FAFC)
+          ) {
+            Row(
+              modifier = Modifier.padding(12.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(36.dp)
+                  .clip(CircleShape)
+                  .background(MediTealLight),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(Icons.Default.VerifiedUser, contentDescription = null, tint = MediTealPrimary, modifier = Modifier.size(18.dp))
+              }
+              Column(modifier = Modifier.weight(1f)) {
+                Text("HPCSA & SANC Credential Vault", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Verified practitioner licenses, CPD points & Form 7", fontSize = 11.sp, color = MediTextMuted)
+              }
+              Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MediTextMuted)
+            }
+          }
+
+          // 2. Hospital Manager Requisition Dashboard
+          Surface(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clip(RoundedCornerShape(10.dp))
+              .border(1.dp, MediCardBorder, RoundedCornerShape(10.dp))
+              .clickable { onNavigateToRequisitions() },
+            color = Color(0xFFF8FAFC)
+          ) {
+            Row(
+              modifier = Modifier.padding(12.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(36.dp)
+                  .clip(CircleShape)
+                  .background(Color(0xFFEFF6FF)),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(Icons.Default.Campaign, contentDescription = null, tint = Color(0xFF2563EB), modifier = Modifier.size(18.dp))
+              }
+              Column(modifier = Modifier.weight(1f)) {
+                Text("Hospital Requisition Dashboard", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Shift roster management & emergency locum broadcasts", fontSize = 11.sp, color = MediTextMuted)
+              }
+              Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MediTextMuted)
+            }
+          }
+
+          // 3. Admin Dispute Portal
+          Surface(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clip(RoundedCornerShape(10.dp))
+              .border(1.dp, MediCardBorder, RoundedCornerShape(10.dp))
+              .clickable { onNavigateToDisputes() },
+            color = Color(0xFFF8FAFC)
+          ) {
+            Row(
+              modifier = Modifier.padding(12.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(36.dp)
+                  .clip(CircleShape)
+                  .background(Color(0xFFFEF2F2)),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(Icons.Default.Gavel, contentDescription = null, tint = MediDangerRed, modifier = Modifier.size(18.dp))
+              }
+              Column(modifier = Modifier.weight(1f)) {
+                Text("Admin Dispute Portal", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("Escrow freeze tribunal & clinical mediation determinations", fontSize = 11.sp, color = MediTextMuted)
+              }
+              Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MediTextMuted)
+            }
           }
         }
       }

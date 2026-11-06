@@ -142,3 +142,95 @@ data class AuditLogEntry(
   val details: String,
   val performedBy: String
 )
+
+enum class RegulatoryCouncil(val displayName: String, val shortName: String) {
+  HPCSA("Health Professions Council of South Africa", "HPCSA"),
+  SANC("South African Nursing Council", "SANC")
+}
+
+data class CredentialVaultItem(
+  val id: String,
+  val practitionerId: String,
+  val practitionerName: String,
+  val initials: String,
+  val profession: ProfessionCategory,
+  val council: RegulatoryCouncil,
+  val registrationNumber: String,
+  val category: String,
+  val annualCertificateExpiry: String,
+  val isApcPaid: Boolean,
+  val cpdPointsCurrent: Int,
+  val cpdPointsRequired: Int = 30,
+  val malpracticeInsurer: String,
+  val malpracticePolicyNumber: String,
+  val malpracticeExpiry: String,
+  val policeClearanceStatus: String,
+  val status: VerificationStatus,
+  val lastVerifiedTimestamp: String,
+  val qrRegisterHash: String
+)
+
+enum class RequisitionStatus(val label: String) {
+  OPEN_BROADCASTING("Open & Broadcasting"),
+  FILLED("Filled & Confirmed"),
+  IN_PROGRESS("In Progress"),
+  COMPLETED("Completed"),
+  CANCELLED("Cancelled")
+}
+
+enum class HospitalDepartment(val displayName: String, val code: String) {
+  EMERGENCY_CASUALTY("Emergency & Trauma (Casualty)", "ER"),
+  ICU_CRITICAL_CARE("ICU & Critical Care", "ICU"),
+  OBSTETRICS_NEONATAL("Obstetrics & Neonatal", "OB/NICU"),
+  THEATRE_ANAESTHETICS("Operating Theatre & Anaesthetics", "OT"),
+  GENERAL_WARD("General Medical & Surgical Ward", "WARD"),
+  DENTAL_CLINIC("Outpatient Dental Clinic", "DENT")
+}
+
+data class HospitalRequisition(
+  val id: String,
+  val facilityId: String,
+  val facilityName: String,
+  val department: HospitalDepartment,
+  val roleNeeded: String,
+  val profession: ProfessionCategory,
+  val date: String,
+  val shiftType: String,
+  val rateOfferedZar: Int,
+  val locumsNeeded: Int = 1,
+  val locumsAssigned: Int = 0,
+  val status: RequisitionStatus,
+  val urgency: String = "High",
+  val broadcastRadiusKm: Int = 25,
+  val assignedWorkerName: String? = null,
+  val assignedWorkerInitials: String? = null,
+  val notes: String = ""
+)
+
+enum class DisputeStatus(val label: String) {
+  ACTIVE_INVESTIGATION("Active Dispute (Escrow Frozen)"),
+  UNDER_MEDIATION("Under Mediation"),
+  RESOLVED_RELEASED("Resolved (Released to Doctor)"),
+  RESOLVED_REFUNDED("Resolved (Refunded to Hospital)"),
+  RESOLVED_SPLIT("Resolved (50/50 Settlement Split)")
+}
+
+data class DisputeCase(
+  val id: String,
+  val caseNumber: String,
+  val bookingId: String,
+  val hospitalName: String,
+  val practitionerName: String,
+  val practitionerInitials: String,
+  val practitionerTitle: String,
+  val disputedAmountZar: Int,
+  val reasonCategory: String,
+  val hospitalStatement: String,
+  val practitionerStatement: String,
+  val checkInTimestamp: String,
+  val checkOutTimestamp: String,
+  val status: DisputeStatus,
+  val createdAt: String,
+  val resolutionSummary: String? = null,
+  val resolvedAt: String? = null
+)

@@ -74,4 +74,57 @@ class ExampleRobolectricTest {
     val updated = MediGigRepository.bookings.value.first { it.id == booking.id }
     assertEquals(BookingStatus.DISPUTED, updated.status)
   }
+
+  @Test
+  fun `test HPCSA and SANC credential vault live verification`() {
+    val vault = MediGigRepository.credentialsVault.value
+    assertTrue("Vault should contain seeded credentials", vault.isNotEmpty())
+
+    val hpcsaDoc = vault.firstOrNull { it.council.name == "HPCSA" }
+    assertNotNull("Should find HPCSA doctor in vault", hpcsaDoc)
+    assertTrue("HPCSA Reg should not be empty", hpcsaDoc!!.registrationNumber.startsWith("MP") || hpcsaDoc.registrationNumber.startsWith("DP"))
+
+    val sancNurse = vault.firstOrNull { it.council.name == "SANC" }
+    assertNotNull("Should find SANC nurse in vault", sancNurse)
+    assertTrue("SANC Reg should start with SANC", sancNurse!!.registrationNumber.startsWith("SANC"))
+
+    // Test live register validation trigger
+    MediGigRepository.triggerLiveRegisterVerification(hpcsaDoc.id)
+    val updatedDoc = MediGigRepository.credentialsVault.value.first { it.id == hpcsaDoc.id }
+    assertTrue(updatedDoc.lastVerifiedTimestamp.contains("Live Register Validated"))
+  }
+
+  @Test
+  fun `test hospital requisition creation and broadcast`() {
+    val initialCount = MediGigRepository.hospitalRequisitions.value.size
+    MediGigRepository.createRequisition(
+      department = com.example.model.HospitalDepartment.ICU_CRITICAL_CARE,
+      roleNeeded = "Emergency ICU Locum Sister",
+      profession = com.example.model.ProfessionCategory.REGISTERED_NURSE,
+      date = "Tonight (19:00 - 07:00)",
+      shiftType = "12h Night Shift",
+      rateOfferedZar = 1600,
+      urgency = "Critical",
+      broadcastRadiusKm = 30,
+      notes = "Ventilator patient coverage needed immediately"
+    )
+    val newCount = MediGigRepository.hospitalRequisitions.value.size
+    assertEquals(initialCount + 1, newCount)
+
+    val latestReq = MediGigRepository.hospitalRequisitions.value.first()
+    assertEquals("Emergency ICU Locum Sister", latestReq.roleNeeded)
+    assertEquals(com.example.model.RequisitionStatus.OPEN_BROADCASTING, latestReq.status)
+  }
+
+  @Test
+  fun `test admin dispute portal tribunal resolution`() {
+    val activeCase = MediGigRepository.disputeCases.value.firstOrNull { it.status == com.example.model.DisputeStatus.ACTIVE_INVESTIGATION }
+    assertNotNull("Should have active dispute case", activeCase)
+
+    // Admin resolves 50/50 split
+    MediGigRepository.resolveDisputeSplit5050(activeCase!!.id, "Equitable split agreed after GPS log audit")
+    val resolved = MediGigRepository.disputeCases.value.first { it.id == activeCase.id }
+    assertEquals(com.example.model.DisputeStatus.RESOLVED_SPLIT, resolved.status)
+    assertTrue(resolved.resolutionSummary?.contains("50/50") == true)
+  }
 }
