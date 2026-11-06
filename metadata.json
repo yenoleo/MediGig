@@ -1,0 +1,6 @@
+{
+  "name": "MediGig ZA",
+  "description": "South African medical freelance marketplace for locum professionals and practices with escrow wallet and AI Copilot",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
