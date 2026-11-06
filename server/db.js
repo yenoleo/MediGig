@@ -4,9 +4,9 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const DATA_DIR = path.join(__dirname, 'data');
-export const DB_FILE = path.join(DATA_DIR, 'db.json');
-export const UPLOAD_DIR = path.join(__dirname, 'uploads');
+export const DATA_DIR = process.env.VERCEL ? '/tmp' : path.join(__dirname, 'data');
+export const DB_FILE = process.env.VERCEL ? path.join('/tmp', 'db.json') : path.join(DATA_DIR, 'db.json');
+export const UPLOAD_DIR = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.join(__dirname, 'uploads');
 
 export const SERVICE_FEE_RATE = 0.05;
 
