@@ -1,0 +1,156 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account and active role in MediGig ZA marketplace",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "fullName": { "type": "string" },
+        "role": { "type": "string", "enum": ["FREELANCER", "HIRER", "BOTH"] },
+        "activeRole": { "type": "string", "enum": ["FREELANCER", "HIRER"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "fullName", "role", "activeRole"]
+    },
+    "FreelancerProfile": {
+      "title": "FreelancerProfile",
+      "description": "Healthcare worker professional profile and credentials",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "initials": { "type": "string" },
+        "fullName": { "type": "string" },
+        "title": { "type": "string" },
+        "profession": { "type": "string" },
+        "specialty": { "type": "string" },
+        "dailyRateZar": { "type": "number" },
+        "distanceKm": { "type": "number" },
+        "generalLocation": { "type": "string" },
+        "isAvailableToday": { "type": "boolean" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "yearsExperience": { "type": "number" },
+        "hpcsaOrSancNumber": { "type": "string" },
+        "verificationStatus": { "type": "string", "enum": ["VERIFIED", "PENDING_REVIEW", "REJECTED", "EXPIRED"] },
+        "maxDistanceKm": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "initials", "fullName", "title", "dailyRateZar", "hpcsaOrSancNumber"]
+    },
+    "PracticeProfile": {
+      "title": "PracticeProfile",
+      "description": "Hospital or clinic practice information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "practiceType": { "type": "string" },
+        "registrationNumber": { "type": "string" },
+        "contactPerson": { "type": "string" },
+        "generalLocation": { "type": "string" },
+        "fullAddress": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "practiceType", "registrationNumber", "contactPerson", "generalLocation", "fullAddress"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Locum shift booking and escrow lifecycle",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "hirerId": { "type": "string" },
+        "freelancerId": { "type": "string" },
+        "hirerName": { "type": "string" },
+        "hirerGeneralLocation": { "type": "string" },
+        "hirerFullAddress": { "type": "string" },
+        "freelancerName": { "type": "string" },
+        "freelancerInitials": { "type": "string" },
+        "freelancerTitle": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "totalDays": { "type": "number" },
+        "timeSlot": { "type": "string" },
+        "ratePerDayZar": { "type": "number" },
+        "totalAmountZar": { "type": "number" },
+        "distanceKm": { "type": "number" },
+        "status": {
+          "type": "string",
+          "enum": ["PENDING_RESPONSE", "ACCEPTED_ESCROW", "IN_PROGRESS", "COMPLETED_BY_PRO", "PENDING_RELEASE", "DISPUTED", "FUNDS_RELEASED", "DECLINED", "CANCELLED"]
+        },
+        "escrowDaysRemaining": { "type": "number" },
+        "disputeReason": { "type": "string" },
+        "ratingGiven": { "type": "number" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "hirerId", "freelancerId", "hirerName", "freelancerName", "startDate", "endDate", "totalDays", "totalAmountZar", "status"]
+    },
+    "Wallet": {
+      "title": "Wallet",
+      "description": "User stored-value wallet and escrow balances in ZAR",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "availableBalanceZar": { "type": "number" },
+        "escrowPendingZar": { "type": "number" },
+        "totalEarnedZar": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "availableBalanceZar", "escrowPendingZar", "totalEarnedZar"]
+    },
+    "WalletTransaction": {
+      "title": "WalletTransaction",
+      "description": "Immutable ledger record for wallet operations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["CREDIT_ADD_FUNDS", "ESCROW_HOLD", "ESCROW_RELEASE", "WITHDRAWAL", "REFUND", "DISPUTE_REFUND"]
+        },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "amountZar": { "type": "number" },
+        "isPositive": { "type": "boolean" },
+        "status": { "type": "string" },
+        "reference": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "type", "title", "amountZar", "isPositive", "status", "reference"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User accounts"
+    },
+    "/freelancer_profiles/{userId}": {
+      "schema": { "$ref": "#/entities/FreelancerProfile" },
+      "description": "Healthcare worker public directory profiles"
+    },
+    "/practice_profiles/{userId}": {
+      "schema": { "$ref": "#/entities/PracticeProfile" },
+      "description": "Hospital and clinic practice profiles"
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Locum shift bookings and escrow records"
+    },
+    "/wallets/{userId}": {
+      "schema": { "$ref": "#/entities/Wallet" },
+      "description": "User ZAR wallet balance"
+    },
+    "/wallets/{userId}/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/WalletTransaction" },
+      "description": "User transaction history"
+    }
+  }
+}
