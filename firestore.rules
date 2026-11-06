@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isBookingParticipant(data) {
+      return isAuthenticated() && (request.auth.uid == data.hirerId || request.auth.uid == data.freelancerId);
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    match /freelancer_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    match /practice_profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    match /bookings/{bookingId} {
+      allow read: if isBookingParticipant(resource.data);
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.hirerId;
+      allow update: if isBookingParticipant(resource.data);
+      allow delete: if false;
+    }
+
+    match /wallets/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /transactions/{transactionId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}
